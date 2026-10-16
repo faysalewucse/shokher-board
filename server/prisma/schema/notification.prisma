@@ -1,0 +1,34 @@
+// Notification — in-app notifications surfaced both via REST polling and
+// real-time socket events. Persisted so offline users see them on next login.
+model Notification {
+  id String @id @default(cuid())
+
+  userId String @db.VarChar(191)
+  user   User   @relation("NotificationUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  type    String @db.VarChar(50) // e.g. "admin.message", "admin.broadcast"
+  title   String @db.VarChar(255) // Short headline
+  message String @db.Text // Detailed message (renamed from body for consistency)
+  data    Json? // arbitrary payload for the client (entityId, route, imageUrl, ...)
+
+  // Priority and actions
+  priority    String  @default("normal") @db.VarChar(20) // low, normal, high, urgent
+  actionUrl   String? @db.VarChar(500) // Link to related page
+  actionLabel String? @db.VarChar(100) // Button text (e.g., "View")
+
+  // Read status
+  isRead Boolean   @default(false)
+  readAt DateTime?
+
+  // Expiry and cleanup
+  expiresAt DateTime? // Auto-delete after this time
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+  @@index([priority])
+  @@map("notifications")
+}

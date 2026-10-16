@@ -1,0 +1,884 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MONOCHROME DESIGN SYSTEM
+   One palette — black (#0a0a0a), white and a neutral gray ramp. No hue.
+   The antd mirror of these values lives in src/theme/tokens.js.
+   `data-theme="dark"` on <html> inverts the semantic layer (white-on-black).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --ff-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --ff-body: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --ff-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Raw ramp (light) */
+  --black: #0a0a0a;
+  --white: #ffffff;
+  --g-50: #fafafa;
+  --g-100: #f4f4f4;
+  --g-150: #ededed;
+  --g-200: #e4e4e4;
+  --g-300: #d1d1d1;
+  --g-400: #a3a3a3;
+  --g-500: #737373;
+  --g-600: #525252;
+  --g-700: #3d3d3d;
+  --g-800: #262626;
+  --g-900: #141414;
+
+  /* Semantic layer */
+  --c-bg: var(--g-100);          /* app canvas */
+  --c-surface: var(--white);     /* cards, panels, header */
+  --c-surface-2: var(--g-50);    /* subtle wells */
+  --c-surface-3: var(--g-150);   /* list columns, hover fills */
+  --c-line: var(--g-200);
+  --c-line-2: var(--g-300);
+  --c-line-strong: var(--black);
+  --c-fg: var(--black);
+  --c-fg-2: var(--g-600);
+  --c-fg-3: var(--g-500);
+  --c-inv: var(--black);         /* solid fill */
+  --c-on-inv: var(--white);      /* text on solid fill */
+  --c-strong: var(--g-700);      /* dark-gray fill */
+  --c-focus: var(--black);
+  --c-hatch: rgba(10, 10, 10, 0.16);
+
+  --c-sidebar: var(--black);
+  --c-sidebar-fg: var(--white);
+  --c-sidebar-muted: rgba(255, 255, 255, 0.56);
+  --c-sidebar-line: rgba(255, 255, 255, 0.1);
+  --c-sidebar-hover: rgba(255, 255, 255, 0.08);
+
+  --c-avatar-bg: var(--black);
+  --c-avatar-fg: var(--white);
+
+  --shadow-hard: 3px 3px 0 0 var(--c-fg);
+  --shadow-hard-lg: 6px 6px 0 0 var(--c-fg);
+  --shadow-soft: 0 1px 0 0 var(--c-line);
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur: 0.18s;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --g-50: #141414;
+  --g-100: #1a1a1a;
+  --g-150: #202020;
+  --g-200: #2a2a2a;
+  --g-300: #3a3a3a;
+  --g-400: #6b6b6b;
+  --g-500: #929292;
+  --g-600: #b8b8b8;
+  --g-700: #d4d4d4;
+  --g-800: #e8e8e8;
+  --g-900: #f5f5f5;
+
+  --c-bg: var(--black);
+  --c-surface: #141414;
+  --c-surface-2: #1a1a1a;
+  --c-surface-3: #1f1f1f;
+  --c-line: #2e2e2e;
+  --c-line-2: #424242;
+  --c-line-strong: #fafafa;
+  --c-fg: #fafafa;
+  --c-fg-2: #b8b8b8;
+  --c-fg-3: #929292;
+  --c-inv: #fafafa;
+  --c-on-inv: var(--black);
+  --c-strong: #b8b8b8;
+  --c-focus: #fafafa;
+  --c-hatch: rgba(250, 250, 250, 0.2);
+
+  --c-sidebar: #000000;
+  --c-sidebar-line: rgba(255, 255, 255, 0.09);
+
+  --c-avatar-bg: #fafafa;
+  --c-avatar-fg: var(--black);
+
+  color-scheme: dark;
+}
+
+/* Tailwind: remap the gray ramp + add semantic utilities (bg-surface, text-fg…). */
+@theme inline {
+  --color-gray-50: var(--g-50);
+  --color-gray-100: var(--g-100);
+  --color-gray-200: var(--g-200);
+  --color-gray-300: var(--g-300);
+  --color-gray-400: var(--g-400);
+  --color-gray-500: var(--g-500);
+  --color-gray-600: var(--g-600);
+  --color-gray-700: var(--g-700);
+  --color-gray-800: var(--g-800);
+  --color-gray-900: var(--g-900);
+  --color-canvas: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-surface-3: var(--c-surface-3);
+  --color-line: var(--c-line);
+  --color-line-2: var(--c-line-2);
+  --color-line-strong: var(--c-line-strong);
+  --color-fg: var(--c-fg);
+  --color-fg-2: var(--c-fg-2);
+  --color-fg-3: var(--c-fg-3);
+  --color-inv: var(--c-inv);
+  --color-on-inv: var(--c-on-inv);
+  --color-primary: var(--c-fg);
+  --font-sans: var(--ff-body);
+  --font-display: var(--ff-display);
+  --font-mono: var(--ff-mono);
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-fg);
+  font-family: var(--ff-body);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--c-inv);
+  color: var(--c-on-inv);
+}
+
+h1, h2, h3, h4,
+.font-display,
+.ant-typography h1, .ant-typography h2, .ant-typography h3, .ant-typography h4,
+h1.ant-typography, h2.ant-typography, h3.ant-typography, h4.ant-typography,
+.ant-modal-title,
+.ant-drawer-title,
+.ant-card-head-title,
+.ant-result-title {
+  font-family: var(--ff-display);
+  font-stretch: 108%;
+  letter-spacing: -0.02em;
+}
+
+.eyebrow {
+  font-family: var(--ff-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-fg-3);
+}
+
+.mono { font-family: var(--ff-mono); }
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* Visible keyboard focus everywhere (black ring, white in dark mode). */
+:where(a, button, [role="button"], [tabindex], summary, input[type="checkbox"], input[type="radio"]):focus-visible,
+.ant-btn:focus-visible,
+.ant-menu-item:focus-visible,
+.ant-tabs-tab-btn:focus-visible,
+.ant-segmented-item:focus-within,
+.ant-pagination-item:focus-visible,
+.ant-checkbox-input:focus-visible + .ant-checkbox-inner,
+.ant-switch:focus-visible {
+  outline: 2px solid var(--c-focus) !important;
+  outline-offset: 2px !important;
+}
+
+/* Thin neutral scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-line-2) transparent;
+}
+
+/* ── Sidebar (black, white text, white active block) ─────────────────────── */
+.app-sider .ant-menu {
+  font-family: var(--ff-body);
+}
+
+.app-sider .ant-menu-dark .ant-menu-item,
+.app-sider .ant-menu-dark .ant-menu-submenu-title {
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.app-sider .ant-menu-inline.ant-menu-root .ant-menu-item-selected {
+  background-color: var(--white) !important;
+  color: var(--black) !important;
+  border-radius: 3px;
+  box-shadow: inset 3px 0 0 0 var(--black);
+}
+
+.app-sider .ant-menu-inline.ant-menu-root .ant-menu-item-selected .anticon,
+.app-sider .ant-menu-inline.ant-menu-root .ant-menu-item-selected .ant-menu-title-content {
+  color: var(--black) !important;
+  font-weight: 650;
+}
+
+.app-sider .ant-menu-item:not(.ant-menu-item-selected):hover,
+.app-sider .ant-menu-submenu-title:hover {
+  background-color: var(--c-sidebar-hover) !important;
+  color: var(--white) !important;
+  border-radius: 3px;
+}
+
+/* Parent of the active child stays readable white */
+.app-sider .ant-menu-submenu-selected > .ant-menu-submenu-title,
+.app-sider .ant-menu-submenu-selected > .ant-menu-submenu-title .anticon {
+  color: var(--white) !important;
+}
+
+.app-sider .ant-menu-item-selected::after {
+  border-bottom-width: 0 !important;
+}
+
+.app-sider .ant-menu-submenu-arrow {
+  color: var(--c-sidebar-muted) !important;
+}
+
+.app-sider .ant-menu-submenu-title:hover .ant-menu-submenu-arrow,
+.app-sider .ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-submenu-arrow {
+  color: var(--white) !important;
+}
+
+/* Collapsed: icon chips */
+.ant-layout-sider-collapsed .ant-menu-item .ant-menu-title-content,
+.ant-layout-sider-collapsed .ant-menu-submenu-title .ant-menu-title-content {
+  display: none;
+}
+
+.ant-layout-sider-collapsed .ant-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  margin: 4px 0;
+  height: 44px;
+  line-height: 44px;
+}
+
+.ant-layout-sider-collapsed .ant-menu-item .ant-menu-item-icon,
+.ant-layout-sider-collapsed .ant-menu-item .anticon,
+.ant-layout-sider-collapsed .ant-menu-submenu-title .ant-menu-item-icon,
+.ant-layout-sider-collapsed .ant-menu-submenu-title .anticon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--c-sidebar-line);
+  border-radius: 4px;
+  background: transparent;
+  font-size: 16px;
+  color: var(--c-sidebar-muted);
+  transition: all var(--dur) var(--ease);
+}
+
+.ant-layout-sider-collapsed .ant-menu-item:hover .anticon,
+.ant-layout-sider-collapsed .ant-menu-submenu-title:hover .anticon {
+  border-color: rgba(255, 255, 255, 0.45);
+  color: var(--white);
+}
+
+.ant-layout-sider-collapsed .ant-menu-item-selected .anticon,
+.ant-layout-sider-collapsed .ant-menu-submenu-selected > .ant-menu-submenu-title .anticon {
+  border-color: var(--white);
+  background: var(--white);
+  color: var(--black) !important;
+}
+
+.ant-layout-sider-collapsed .ant-menu.ant-menu-root .ant-menu-item-selected,
+.ant-layout-sider-collapsed .ant-menu.ant-menu-root .ant-menu-item:hover,
+.ant-layout-sider-collapsed .ant-menu.ant-menu-root .ant-menu-submenu-title:hover {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.ant-layout-sider-collapsed .ant-menu-submenu {
+  height: auto !important;
+  margin: 4px 0;
+  padding: 0;
+  line-height: normal;
+  overflow: visible !important;
+}
+
+/* AntD pins the collapsed submenu title to itemHeight; !important outranks
+   its 3-class selector so the 40px chip isn't clipped. */
+.ant-layout-sider-collapsed .ant-menu-submenu-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  margin: 0;
+  height: 44px !important;
+  line-height: 44px !important;
+  overflow: visible !important;
+}
+
+.ant-layout-sider-collapsed .ant-menu-submenu-arrow {
+  display: none;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.ant-btn {
+  letter-spacing: 0.005em;
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease), transform var(--dur) var(--ease) !important;
+}
+
+.ant-btn-primary {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+.ant-btn-primary::after {
+  display: none !important;
+}
+
+.ant-btn:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+/* Destructive = solid ink with the label doing the talking */
+.ant-btn-dangerous.ant-btn-variant-solid {
+  background: var(--c-inv) !important;
+  color: var(--c-on-inv) !important;
+}
+.ant-btn-dangerous.ant-btn-variant-outlined {
+  border-color: var(--c-fg) !important;
+}
+
+/* ── Forms ────────────────────────────────────────────────────────────────── */
+.ant-form-item-label > label {
+  font-weight: 600 !important;
+  letter-spacing: 0.01em;
+}
+
+/* Errors: bold text + icon, doubled border — no red */
+.ant-form-item-explain-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 650;
+  color: var(--c-fg) !important;
+  margin-top: 4px;
+}
+
+.ant-form-item-explain-error::before {
+  content: "!";
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--c-inv);
+  color: var(--c-on-inv);
+  font-family: var(--ff-display);
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.ant-input-status-error:not(.ant-input-disabled),
+.ant-input-affix-wrapper-status-error:not(.ant-input-affix-wrapper-disabled),
+.ant-select-status-error .ant-select-selector,
+.ant-select-status-error.ant-select,
+.ant-picker-status-error,
+.ant-mentions-status-error {
+  border-color: var(--c-fg) !important;
+  box-shadow: inset 0 0 0 1px var(--c-fg) !important;
+}
+
+/* ── Tables: clean, strong header, no zebra ───────────────────────────────── */
+.ant-table-wrapper .ant-table {
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.ant-table-wrapper .ant-table-thead > tr > th {
+  font-family: var(--ff-mono);
+  font-size: 10.5px;
+  font-weight: 600 !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 1.5px solid var(--c-fg) !important;
+}
+
+.ant-table-wrapper .ant-table-tbody > tr > td {
+  transition: background-color var(--dur) var(--ease);
+}
+
+.ant-table-wrapper .ant-table-tbody > tr:last-child > td {
+  border-bottom: none;
+}
+
+.ant-table-wrapper .ant-table-pagination.ant-pagination {
+  margin: 14px 0 0;
+}
+
+.ant-pagination .ant-pagination-item-active {
+  background: var(--c-inv) !important;
+  border-color: var(--c-inv) !important;
+}
+.ant-pagination .ant-pagination-item-active a {
+  color: var(--c-on-inv) !important;
+}
+
+/* ── Cards / modals / drawers ─────────────────────────────────────────────── */
+.ant-card {
+  border-color: var(--c-line) !important;
+}
+
+.ant-card .ant-card-head {
+  border-bottom-color: var(--c-line);
+}
+
+.ant-modal .ant-modal-content,
+.ant-modal .ant-modal-container {
+  border: 1px solid var(--c-line);
+}
+
+.ant-modal .ant-modal-header {
+  margin-bottom: 14px;
+}
+
+.ant-modal-confirm .ant-modal-confirm-title {
+  font-family: var(--ff-display);
+  letter-spacing: -0.01em;
+}
+
+.ant-drawer .ant-drawer-header {
+  border-bottom: 1px solid var(--c-line);
+}
+
+/* Tooltip — tight and typographic */
+.ant-tooltip .ant-tooltip-container,
+.ant-tooltip .ant-tooltip-inner {
+  font-size: 12px;
+  font-weight: 500;
+  min-height: 26px;
+  padding: 5px 9px;
+}
+
+/* Message / notification toasts — crisp box, ink icon */
+.ant-message .ant-message-notice-content {
+  border: 1px solid var(--c-line);
+  font-weight: 550;
+}
+
+.ant-message .anticon,
+.ant-notification .ant-notification-notice-icon {
+  color: var(--c-fg) !important;
+}
+
+.ant-message .ant-message-error .anticon,
+.ant-message .ant-message-warning .anticon {
+  background: var(--c-inv);
+  color: var(--c-on-inv) !important;
+  border-radius: 50%;
+}
+
+/* Result / Empty use our line art */
+.ant-result .ant-result-icon > .anticon,
+.ant-result .ant-result-icon {
+  color: var(--c-fg) !important;
+}
+
+.ant-tag {
+  font-weight: 550;
+}
+
+/* Skeleton — flat grays */
+.ant-skeleton .ant-skeleton-title,
+.ant-skeleton .ant-skeleton-paragraph > li {
+  border-radius: 2px !important;
+}
+
+/* Switch / checkbox in dark mode: keep the knob readable */
+:root[data-theme="dark"] .ant-switch.ant-switch-checked .ant-switch-handle::before {
+  background: var(--black);
+}
+:root[data-theme="dark"] .ant-checkbox-checked .ant-checkbox-inner::after {
+  border-color: var(--black);
+}
+
+/* ── Mono components ──────────────────────────────────────────────────────── */
+.mono-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.mono-tag__icon { display: inline-flex; font-size: 10px; }
+.mono-tag--solid { background: var(--c-inv); color: var(--c-on-inv); border-color: var(--c-inv); }
+.mono-tag--strong { background: var(--c-strong); color: var(--c-on-inv); border-color: var(--c-strong); }
+.mono-tag--outline { background: var(--c-surface); color: var(--c-fg); border-color: var(--c-fg); }
+.mono-tag--dashed { background: transparent; color: var(--c-fg); border: 1px dashed var(--c-fg-3); }
+.mono-tag--soft { background: var(--c-surface-3); color: var(--c-fg); border-color: var(--c-line); }
+.mono-tag--muted { background: transparent; color: var(--c-fg-3); border-color: transparent; padding-inline: 2px; font-weight: 500; }
+.mono-tag--strike { text-decoration: line-through; }
+
+.mono-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.mono-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--c-inv);
+  color: var(--c-on-inv);
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.mono-count--muted {
+  background: transparent;
+  color: var(--c-fg-3);
+  box-shadow: inset 0 0 0 1px var(--c-line-2);
+}
+
+/* Empty states */
+.mono-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 32px 16px;
+  color: var(--c-fg-3);
+  text-align: center;
+}
+.mono-empty__art { color: var(--c-fg); opacity: 0.85; }
+.mono-empty__text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-fg-2);
+}
+.mono-empty__actions { margin-top: 6px; }
+.mono-empty--compact { padding: 14px 8px; gap: 6px; }
+.mono-empty--compact .mono-empty__text { font-size: 12px; }
+
+/* Panels (page-level white blocks) */
+.panel {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+}
+
+/* Lift-on-hover with a hard offset shadow — the portal's signature */
+.lift {
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.lift:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard);
+  border-color: var(--c-fg) !important;
+}
+
+/* Header icon buttons */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  color: var(--c-fg);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+.icon-btn:hover {
+  border-color: var(--c-fg);
+}
+.icon-btn--active {
+  background: var(--c-inv);
+  border-color: var(--c-inv);
+  color: var(--c-on-inv);
+}
+
+/* Board card tiles */
+.card-tile {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: 4px;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.card-tile:hover {
+  border-color: var(--c-fg);
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0 0 var(--c-fg);
+}
+.card-tile--overlay,
+.card-tile--overlay:hover {
+  border-color: var(--c-fg);
+  transform: rotate(2deg);
+  box-shadow: var(--shadow-hard-lg);
+  cursor: grabbing;
+}
+
+/* Board label chips (see pages/boards/BoardChips.jsx) */
+.label-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  min-width: 28px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  font-size: 10.5px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--c-fg);
+}
+.label-chip--md { height: 22px; font-size: 12px; padding: 0 8px; }
+.label-chip--solid { background: var(--c-inv); color: var(--c-on-inv); border-color: var(--c-inv); }
+.label-chip--graphite { background: var(--c-strong); color: var(--c-on-inv); border-color: var(--c-strong); }
+.label-chip--tint { background: var(--c-surface-3); border-color: var(--c-line-2); }
+.label-chip--outline { background: var(--c-surface); border-color: var(--c-fg); }
+.label-chip--dashed { background: var(--c-surface); border: 1px dashed var(--c-fg); }
+.label-chip--dotted { background: var(--c-surface); border: 1.5px dotted var(--c-fg); }
+.label-chip--double { background: var(--c-surface); border: 3px double var(--c-fg); }
+.label-chip--hatched {
+  border-color: var(--c-fg);
+  background-color: var(--c-surface);
+  background-image: repeating-linear-gradient(135deg, var(--c-hatch) 0 2px, transparent 2px 5px);
+}
+.label-chip--dot,
+.label-chip--ring { background: var(--c-surface-2); border-color: var(--c-line-2); }
+.label-chip__mark {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-fg);
+}
+.label-chip--ring .label-chip__mark {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--c-fg);
+  width: 7px;
+  height: 7px;
+}
+
+/* Card-tile meta badges */
+.meta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 4px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--c-fg-2);
+  font-variant-numeric: tabular-nums;
+}
+.meta-badge--outline { border-color: var(--c-fg); color: var(--c-fg); padding: 0 5px; }
+.meta-badge--bold { font-weight: 700; }
+.meta-badge--solid { background: var(--c-inv); border-color: var(--c-inv); color: var(--c-on-inv); font-weight: 700; padding: 0 5px; }
+.meta-badge--strong { background: var(--c-strong); border-color: var(--c-strong); color: var(--c-on-inv); font-weight: 650; padding: 0 5px; }
+.meta-badge--done { border-color: var(--c-line-2); color: var(--c-fg-3); padding: 0 5px; }
+.meta-badge--done .meta-badge__text { text-decoration: line-through; text-decoration-thickness: 1px; }
+
+/* Message bar mentions / comment @mentions */
+.mention {
+  font-weight: 650;
+  background: var(--c-surface-3);
+  border-radius: 2px;
+  padding: 0 3px;
+  box-shadow: inset 0 -1.5px 0 var(--c-fg);
+}
+
+/* Login backdrop pattern */
+.grid-backdrop {
+  background-color: var(--black);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Page entrance — one quiet fade-up */
+@keyframes rise {
+  from { opacity: 0; translate: 0 6px; }
+  to { opacity: 1; translate: none; }
+}
+.rise { animation: rise 0.2s var(--ease) both; }
+.rise-1 { animation-delay: 0.04s; }
+.rise-2 { animation-delay: 0.08s; }
+.rise-3 { animation-delay: 0.12s; }
+.rise-4 { animation-delay: 0.16s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Board surfaces: stored board colours → light tone + subtle pattern ─────
+   Light canvas so the board sits naturally between the white header and the
+   message bar; patterns keep boards distinguishable. Flips in dark mode. */
+.board-surface {
+  --bs-line: rgba(10, 10, 10, 0.055);
+  --bs-dot: rgba(10, 10, 10, 0.16);
+  background-color: var(--c-surface-2);
+}
+:root[data-theme="dark"] .board-surface {
+  --bs-line: rgba(255, 255, 255, 0.05);
+  --bs-dot: rgba(255, 255, 255, 0.14);
+}
+.board-surface--0 { background-color: var(--c-surface-2); }
+.board-surface--1 {
+  background-color: var(--c-surface-2);
+  background-image: radial-gradient(var(--bs-dot) 1px, transparent 1.6px);
+  background-size: 16px 16px;
+}
+.board-surface--2 {
+  background-color: var(--c-surface-2);
+  background-image: repeating-linear-gradient(135deg, var(--bs-line) 0 1px, transparent 1px 12px);
+}
+.board-surface--3 {
+  background-color: var(--c-surface-2);
+  background-image:
+    linear-gradient(var(--bs-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bs-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.board-surface--4 { background-color: var(--c-surface); }
+.board-surface--5 {
+  background-color: var(--c-surface);
+  background-image: radial-gradient(var(--bs-dot) 1px, transparent 1.6px);
+  background-size: 10px 10px;
+}
+.board-surface--6 {
+  background-color: var(--c-surface);
+  background-image: repeating-linear-gradient(90deg, var(--bs-line) 0 1px, transparent 1px 14px);
+}
+.board-surface--7 {
+  background-color: var(--c-surface);
+  background-image:
+    linear-gradient(var(--bs-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bs-line) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.board-surface--8 { background-color: var(--c-bg); }
+.board-surface--9 {
+  background-color: var(--c-surface-2);
+  background-image:
+    repeating-linear-gradient(45deg, var(--bs-line) 0 1px, transparent 1px 12px),
+    repeating-linear-gradient(-45deg, var(--bs-line) 0 1px, transparent 1px 12px);
+}
+
+/* Board header buttons */
+.ant-btn.board-hbtn {
+  color: var(--c-fg) !important;
+  background: var(--c-surface) !important;
+  border: 1px solid var(--c-line-2) !important;
+}
+.ant-btn.board-hbtn:hover {
+  border-color: var(--c-line-strong) !important;
+}
+
+/* Notification dropdown rows */
+.notif-row {
+  transition: background-color var(--dur) var(--ease);
+}
+.notif-row:hover {
+  background: var(--c-surface-3) !important;
+}
+
+/* ── Verification code input ─────────────────────────────────────────────── */
+.code-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.code-input__cell {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 64px;
+  border: 1.5px solid var(--c-line-2);
+  border-radius: 6px;
+  background: var(--c-surface);
+  color: var(--c-fg);
+  font-family: var(--ff-mono);
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  caret-color: var(--c-fg);
+  outline: none;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+.code-input__cell:hover:not(:disabled) { border-color: var(--c-fg-3); }
+.code-input__cell:focus {
+  border-color: var(--c-line-strong);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-fg) 12%, transparent);
+}
+.code-input__cell.is-filled {
+  border-color: var(--c-line-strong);
+  background: var(--c-surface-2);
+}
+.code-input__cell.is-error {
+  border-color: var(--c-line-strong);
+  border-width: 2.5px;
+  animation: code-shake 0.32s var(--ease);
+}
+.code-input__cell:disabled { opacity: 0.55; cursor: not-allowed; }
+.code-input__sep {
+  flex: 0 0 12px;
+  height: 2px;
+  background: var(--c-line-2);
+  border-radius: 1px;
+}
+@media (max-width: 380px) {
+  .code-input { gap: 6px; }
+  .code-input__cell { height: 54px; font-size: 22px; }
+  .code-input__sep { flex-basis: 6px; }
+}
+@keyframes code-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .code-input__cell.is-error { animation: none; }
+}

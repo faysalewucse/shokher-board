@@ -1,0 +1,133 @@
+// Card — boardId is denormalized from list.boardId for cheap board-wide queries.
+model Card {
+  id          String    @id @default(cuid())
+  boardId     String
+  board       Board     @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  listId      String
+  list        List      @relation(fields: [listId], references: [id], onDelete: Cascade)
+  title       String    @db.VarChar(500)
+  description String?   @db.Text
+  position    Float
+  dueDate     DateTime?
+  startDate   DateTime?
+  priority    String?   @db.VarChar(10) // low | medium | high | urgent
+  source      String    @default("board") @db.VarChar(10) // board | message
+
+  completedAt   DateTime?
+  archivedAt    DateTime?
+  dueNotifiedAt DateTime? // set when the due-soon notification has been sent
+
+  createdById String?
+  createdBy   User?   @relation("CardCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  assignees   CardAssignee[]
+  labels      CardLabel[]
+  checklists  Checklist[]
+  comments    Comment[]
+  attachments Attachment[]
+  activities  Activity[]
+
+  @@index([boardId, listId, position])
+  @@index([listId, position])
+  @@index([boardId, archivedAt])
+  @@index([boardId, source, createdAt])
+  @@index([dueDate, completedAt, dueNotifiedAt])
+  @@map("cards")
+}
+
+model CardAssignee {
+  cardId String
+  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation("CardAssigneeUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([cardId, userId])
+  @@index([userId])
+  @@map("card_assignees")
+}
+
+model CardLabel {
+  cardId  String
+  card    Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  labelId String
+  label   Label  @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([cardId, labelId])
+  @@index([labelId])
+  @@map("card_labels")
+}
+
+model Checklist {
+  id       String @id @default(cuid())
+  cardId   String
+  card     Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  title    String @db.VarChar(200)
+  position Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items ChecklistItem[]
+
+  @@index([cardId, position])
+  @@map("checklists")
+}
+
+model ChecklistItem {
+  id          String    @id @default(cuid())
+  checklistId String
+  checklist   Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  text        String    @db.VarChar(1000)
+  isDone      Boolean   @default(false)
+  position    Float
+  assigneeId  String?
+  assignee    User?     @relation("ChecklistItemAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  dueDate     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([checklistId, position])
+  @@index([assigneeId])
+  @@map("checklist_items")
+}
+
+model Comment {
+  id       String  @id @default(cuid())
+  cardId   String
+  card     Card    @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  authorId String?
+  author   User?   @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  body     String  @db.Text
+
+  createdAt DateTime  @default(now())
+  editedAt  DateTime?
+
+  @@index([cardId, createdAt])
+  @@index([authorId])
+  @@map("comments")
+}
+
+model Attachment {
+  id         String  @id @default(cuid())
+  cardId     String
+  card       Card    @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  uploaderId String?
+  uploader   User?   @relation("AttachmentUploader", fields: [uploaderId], references: [id], onDelete: SetNull)
+  fileName   String  @db.VarChar(255)
+  url        String  @db.VarChar(500)
+  mimeType   String  @db.VarChar(255)
+  size       Int
+
+  createdAt DateTime @default(now())
+
+  @@index([cardId, createdAt])
+  @@map("attachments")
+}

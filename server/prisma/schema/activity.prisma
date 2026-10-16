@@ -1,0 +1,23 @@
+// Activity — board/card/project history feed (primary history for the boards
+// domain; AuditLog stays the generic admin audit trail).
+model Activity {
+  id        String   @id @default(cuid())
+  boardId   String?
+  board     Board?   @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cardId    String?
+  card      Card?    @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  type      String   @db.VarChar(50)
+  data      Json?
+  actorId   String?
+  actor     User?    @relation("ActivityActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([boardId, createdAt])
+  @@index([cardId, createdAt])
+  @@index([projectId, createdAt])
+  @@index([actorId])
+  @@map("activities")
+}

@@ -1,0 +1,79 @@
+// Board — a kanban board. projectId is optional (standalone internal boards).
+model Board {
+  id          String  @id @default(cuid())
+  name        String  @db.VarChar(200)
+  description String? @db.Text
+  color       String? @db.VarChar(30)
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  createdById String?
+  createdBy   User?   @relation("BoardCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  archivedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  members    BoardMember[]
+  labels     Label[]
+  lists      List[]
+  cards      Card[]
+  activities Activity[]
+
+  @@index([projectId])
+  @@index([archivedAt])
+  @@map("boards")
+}
+
+// BoardMember — access control for a board. role: owner | member | viewer
+model BoardMember {
+  id      String @id @default(cuid())
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  userId  String
+  user    User   @relation("BoardMemberUser", fields: [userId], references: [id], onDelete: Cascade)
+  role    String @default("member") @db.VarChar(20)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([boardId, userId])
+  @@index([userId])
+  @@map("board_members")
+}
+
+model Label {
+  id      String @id @default(cuid())
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  name    String @db.VarChar(100)
+  color   String @default("blue") @db.VarChar(30)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cards CardLabel[]
+
+  @@index([boardId])
+  @@map("labels")
+}
+
+model List {
+  id       String  @id @default(cuid())
+  boardId  String
+  board    Board   @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  name     String  @db.VarChar(200)
+  position Float
+  isInbox  Boolean @default(false)
+
+  archivedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  cards Card[]
+
+  @@index([boardId, position])
+  @@index([boardId, archivedAt])
+  @@map("lists")
+}

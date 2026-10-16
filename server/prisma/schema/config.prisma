@@ -1,0 +1,17 @@
+// Singleton application config (one row, key = "app_config").
+model Config {
+  id  String @id @default(cuid())
+  key String @unique @default("app_config")
+
+  // Support contact
+  supportEmail   String?
+  supportNumbers String[] @default([])
+
+  // System flags
+  maintenanceMode     Boolean @default(false)
+  maintenanceMessage  String?
+  registrationEnabled Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

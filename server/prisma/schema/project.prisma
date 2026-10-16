@@ -1,0 +1,28 @@
+// Project — optional parent for boards; optionally belongs to a client.
+model Project {
+  id          String    @id @default(cuid())
+  name        String    @db.VarChar(200)
+  description String?   @db.Text
+  status      String    @default("planning") @db.VarChar(20) // planning | active | on_hold | done
+  startDate   DateTime?
+  deadline    DateTime?
+
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  ownerId String?
+  owner   User?   @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+
+  archivedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  boards     Board[]
+  activities Activity[]
+
+  @@index([clientId])
+  @@index([ownerId])
+  @@index([status])
+  @@index([archivedAt])
+  @@map("projects")
+}

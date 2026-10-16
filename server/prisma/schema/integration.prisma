@@ -1,0 +1,55 @@
+// Slack: any user can connect their own Slack workspace to their account.
+//
+// SlackWorkspace  — one row per Slack team. Holds the app's bot token for that
+//                   team (shared: Slack issues one bot token per workspace).
+// SlackConnection — one row per ShokherBoard user per Slack team. Holds that
+//                   person's Slack identity and their user token.
+//
+// Tokens are stored encrypted (AES-256-GCM, src/utils/crypto.js) and are never
+// returned by the API. When the last connection to a workspace is removed, the
+// bot token is revoked and the workspace row deleted.
+model SlackWorkspace {
+  id String @id @default(cuid())
+
+  teamId       String  @unique
+  teamName     String
+  teamDomain   String?
+  teamIcon     String?
+  enterpriseId String?
+  appId        String?
+
+  botUserId         String
+  botTokenEncrypted String   @db.Text
+  botScopes         String[]
+
+  connections SlackConnection[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("slack_workspaces")
+}
+
+model SlackConnection {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation("SlackConnections", fields: [userId], references: [id], onDelete: Cascade)
+
+  workspaceId String
+  workspace   SlackWorkspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  slackUserId        String
+  slackUserName      String?
+  slackUserAvatar    String?
+  slackUserEmail     String?
+  userTokenEncrypted String?  @db.Text
+  userScopes         String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, workspaceId])
+  @@index([workspaceId])
+  @@map("slack_connections")
+}

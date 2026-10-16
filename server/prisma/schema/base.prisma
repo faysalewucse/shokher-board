@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL")
+}
+
+// Audit Log Model - Tracks all changes across the system
+// Used for compliance, debugging, and change history
+model AuditLog {
+  id String @id @default(cuid())
+
+  // Entity being tracked
+  entityId   String // ID of the record that changed
+  entityType String // Model name: "User", "Role", "Config", etc.
+  action     String // "created", "updated", "deleted", "status_changed", etc.
+
+  // Who made the change
+  actorId String? // User who made the change (null for system actions)
+  actor   User?   @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  // Change details
+  changes   Json? // { before: {...}, after: {...} } or specific field changes
+  ipAddress String? // IP address of the requester
+  userAgent String? // Browser/client identifier
+
+  // Context for grouping and analysis
+  requestId String? // Correlation ID to group multiple changes from one action
+  reason    String? // Reason for change (for moderation/manual updates)
+
+  createdAt DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([actorId])
+  @@index([action])
+  @@index([createdAt])
+  @@index([requestId])
+  @@map("audit_logs")
+}

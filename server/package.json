@@ -1,0 +1,47 @@
+{
+  "name": "shokherboard-server",
+  "version": "0.1.0",
+  "description": "ShokherBoard API \u2014 boards, clients and projects for teams",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "db:migrate": "node scripts/migrate.js",
+    "db:generate": "prisma generate",
+    "seed:roles": "node src/seeds/roles.js",
+    "seed:users": "node src/seeds/users.js",
+    "seed:all": "npm run seed:roles && npm run seed:users",
+    "test:parser": "node scripts/testMessageParser.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@prisma/client": "^6.19.2",
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
+    "joi": "^18.0.2",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^9.0.1",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11",
+    "prisma": "^6.19.2"
+  },
+  "overrides": {
+    "brace-expansion": "5.0.9",
+    "uuid": "^11.1.1",
+    "ip-address": "^10.5.0",
+    "socket.io-parser": "^4.2.7",
+    "deepmerge-ts": "^8.0.2"
+  }
+}

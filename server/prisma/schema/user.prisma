@@ -1,0 +1,53 @@
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  permissions String[]
+  isDefault   Boolean  @default(false)
+  index       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users User[]
+}
+
+model User {
+  id                       String    @id @default(cuid())
+  name                     String
+  email                    String    @unique
+  password                 String
+  avatar                   String?
+  phone                    String?
+  roleId                   String?
+  role                     Role?     @relation(fields: [roleId], references: [id])
+  status                   String    @default("pending") // active | inactive | suspended | pending
+  isEmailVerified          Boolean   @default(false)
+  emailVerificationToken   String?
+  emailVerificationExpires DateTime?
+  passwordResetToken       String?
+  passwordResetExpires     DateTime?
+  lastLoginAt              DateTime?
+  lastActiveAt             DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  notifications Notification[] @relation("NotificationUser")
+  auditLogs     AuditLog[]     @relation("AuditActor")
+  slackConnections SlackConnection[] @relation("SlackConnections")
+
+  // Boards domain
+  clientsCreated         Client[]        @relation("ClientCreatedBy")
+  projectsOwned          Project[]       @relation("ProjectOwner")
+  boardsCreated          Board[]         @relation("BoardCreatedBy")
+  boardMemberships       BoardMember[]   @relation("BoardMemberUser")
+  cardsCreated           Card[]          @relation("CardCreatedBy")
+  cardAssignments        CardAssignee[]  @relation("CardAssigneeUser")
+  checklistItemsAssigned ChecklistItem[] @relation("ChecklistItemAssignee")
+  comments               Comment[]       @relation("CommentAuthor")
+  attachments            Attachment[]    @relation("AttachmentUploader")
+  activities             Activity[]      @relation("ActivityActor")
+
+  @@index([status])
+  @@index([roleId])
+}
