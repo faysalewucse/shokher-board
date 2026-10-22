@@ -55,3 +55,7 @@ Thumbs.db
 *.key
 *.key.pub
 *.pem
+
+# Stray secret dumps
+env.txt
+*.env.txt
