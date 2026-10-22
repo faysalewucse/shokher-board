@@ -1,10 +1,18 @@
 const userService = require('../services/userService');
+const { issueToken } = require('../services/authService');
+const { encodePermissions } = require('../constants/permissions');
 const { successResponse } = require('../utils/responseHandler');
 const { getFileUrl, deleteFileByUrl, UPLOAD_FOLDERS } = require('../middleware/upload');
 
 const getMe = async (req, res, next) => {
   try {
     const result = await userService.getMe(req.user.id);
+    // The JWT carries the role + permissions from login time. If an admin has
+    // changed this user's role since, hand back a fresh token so the change
+    // applies without logging out (the portal calls /users/me on every load).
+    const roleChanged = (result.user.role?.name || null) !== (req.user.role || null);
+    const permsChanged = encodePermissions(result.permissions) !== encodePermissions(req.permissions || []);
+    if (roleChanged || permsChanged) result.token = issueToken(result.user, result.permissions);
     return successResponse(res, { message: 'Profile fetched successfully', data: result });
   } catch (error) {
     next(error);

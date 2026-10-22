@@ -18,6 +18,8 @@ import {
   TeamOutlined,
   AuditOutlined,
   ProjectOutlined,
+  FolderOutlined,
+  ContactsOutlined,
   SunOutlined,
   MoonOutlined,
 } from '@ant-design/icons';
@@ -32,9 +34,8 @@ const { Sider, Content } = Layout;
 const menuItems = [
   { key: '/', icon: <DashboardOutlined />, label: 'Dashboard' },
   { key: '/boards', icon: <ProjectOutlined />, label: 'Boards' },
-  // Clients / Projects go here (next step), e.g.:
-  // { key: '/clients',  icon: <ContactsOutlined />, label: 'Clients',  permission: 'CLIENT_READ' },
-  // { key: '/projects', icon: <FolderOutlined />,   label: 'Projects', permission: 'PROJECT_READ' },
+  { key: '/projects', icon: <FolderOutlined />,   label: 'Projects', permission: 'PROJECT_READ' },
+  { key: '/clients',  icon: <ContactsOutlined />, label: 'Clients',  permission: 'CLIENT_READ' },
   {
     key: 'user-management',
     icon: <TeamOutlined />,
@@ -350,7 +351,7 @@ export default function AdminLayout() {
                 style={{ width: 320 }}
                 allowClear
                 filterOption={false}
-                placeholder="Search features… (users, roles, settings)"
+                placeholder="Search features… (projects, clients, users)"
               >
                 <Input prefix={<SearchOutlined style={{ color: 'var(--c-fg-3)', marginRight: 2 }} />} />
               </AutoComplete>

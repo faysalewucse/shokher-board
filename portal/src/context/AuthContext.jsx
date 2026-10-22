@@ -6,6 +6,14 @@ const AuthContext = createContext(null);
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
 
+// The server returns a fresh token from /users/me when the user's role changed
+// since they logged in (e.g. an admin promoted them) — keep it so the API sees
+// the new permissions without a logout.
+const saveRefreshedToken = (res) => {
+  const fresh = res?.data?.data?.token;
+  if (fresh) localStorage.setItem('shokherboard.token', fresh);
+};
+
 export function AuthProvider({ children }) {
   const [user, setUser]               = useState(null);
   const [permissions, setPermissions] = useState([]);
@@ -13,6 +21,7 @@ export function AuthProvider({ children }) {
 
   const loadMe = async () => {
     const res = await api.get('/users/me');
+    saveRefreshedToken(res);
     setUser(res.data.data.user);
     setPermissions(res.data.data.permissions || []);
   };
@@ -23,6 +32,7 @@ export function AuthProvider({ children }) {
     request
       .then((res) => {
         if (!res) return;
+        saveRefreshedToken(res);
         setUser(res.data.data.user);
         setPermissions(res.data.data.permissions || []);
       })

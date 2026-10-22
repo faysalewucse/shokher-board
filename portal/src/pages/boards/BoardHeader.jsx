@@ -109,11 +109,11 @@ export default function BoardHeader({ connected, onOpenActivity }) {
       style={{ background: 'var(--c-surface)', borderBottom: '1px solid var(--c-line)' }}
     >
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Breadcrumb: Boards / Client / Project. Client & project pages are added in a later step. */}
+        {/* Breadcrumb: Boards / Client / Project */}
         <div className="mono flex items-center gap-1 truncate px-1.5 text-[10.5px] uppercase tracking-[0.1em] text-fg-3">
           <Link to="/boards" className="text-fg-3! hover:text-fg! hover:underline">Boards</Link>
-          {client && (<><RightOutlined style={{ fontSize: 8 }} /><span>{client.name}</span></>)}
-          {project && (<><RightOutlined style={{ fontSize: 8 }} /><span>{project.name}</span></>)}
+          {client && (<><RightOutlined style={{ fontSize: 8 }} /><Link to={`/clients/${client.id}`} className="text-fg-3! hover:text-fg! hover:underline">{client.name}</Link></>)}
+          {project && (<><RightOutlined style={{ fontSize: 8 }} /><Link to={`/projects/${project.id}`} className="text-fg-3! hover:text-fg! hover:underline">{project.name}</Link></>)}
         </div>
         <div className="flex min-w-0 items-center gap-2">
           <BoardName key={board.name} board={board} editable={isOwner} onSave={(name) => save({ name }).catch(() => {})} />

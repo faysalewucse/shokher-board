@@ -16,9 +16,8 @@ export const errorMessage = (err, fallback = 'Something went wrong') =>
 export const lookupUsers = (q = '', limit = 20) =>
   api.get('/users/lookup', { params: { q, limit } }).then(unwrap);
 
-// ── Clients / Projects (read-only bits needed by boards) ────────────────
-export const getClients = (params = {}) => api.get('/clients', { params }).then(unwrap);
-export const getProjects = (params = {}) => api.get('/projects', { params }).then(unwrap);
+// ── Clients / Projects (full wrappers live in ./projects) ───────────────
+export { getClients, getProjects } from './projects';
 
 // ── Boards ───────────────────────────────────────────────────────────────
 export const getBoards = (params = {}) => api.get('/boards', { params }).then(unwrap);

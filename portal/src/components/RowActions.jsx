@@ -25,6 +25,8 @@ export default function RowActions({
   deleteTooltip = 'Delete',
   deleteConfirmTitle = 'Delete this item?',
   deleteConfirmDescription,
+  deleteOkText = 'Delete',
+  deleteIcon = <DeleteFilled />,
   extra,
   size = 'small',
 }) {
@@ -50,7 +52,7 @@ export default function RowActions({
           title={deleteConfirmTitle}
           description={deleteConfirmDescription}
           onConfirm={onDelete}
-          okText="Delete"
+          okText={deleteOkText}
           okButtonProps={{ danger: true }}
           cancelText="Cancel"
         >
@@ -58,7 +60,7 @@ export default function RowActions({
             <Button
               size={size}
               danger
-              icon={<DeleteFilled />}
+              icon={deleteIcon}
               aria-label={deleteTooltip}
             />
           </Tooltip>

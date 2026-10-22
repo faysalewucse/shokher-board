@@ -14,6 +14,10 @@ import Settings          from '@/pages/settings/Settings';
 import NotFound          from '@/pages/NotFound';
 import BoardsList        from '@/pages/boards/BoardsList';
 import Board             from '@/pages/boards/Board';
+import Clients           from '@/pages/clients/Clients';
+import ClientDetail      from '@/pages/clients/ClientDetail';
+import Projects          from '@/pages/projects/Projects';
+import ProjectDetail     from '@/pages/projects/ProjectDetail';
 
 const router = createBrowserRouter([
   {
@@ -31,7 +35,10 @@ const router = createBrowserRouter([
       { index: true,           element: <Dashboard /> },
       { path: 'boards',        element: <BoardsList /> },
       { path: 'boards/:id',    element: <Board /> }, // ?card=<id> opens the card modal
-      // Clients / Projects routes go here (next step): 'clients', 'clients/:id', 'projects', 'projects/:id'
+      { path: 'projects',      element: <Projects /> },     // ?status=&client= filters
+      { path: 'projects/:id',  element: <ProjectDetail /> },
+      { path: 'clients',       element: <Clients /> },
+      { path: 'clients/:id',   element: <ClientDetail /> },
       { path: 'users',         element: <Users /> },
       { path: 'roles',         element: <Roles /> },
       { path: 'audit-logs',    element: <AuditLogs /> },

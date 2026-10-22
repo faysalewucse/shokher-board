@@ -12,6 +12,13 @@ const OTP_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes
 const generateJWT = (payload) =>
   jwt.sign(payload, config.jwt.secret, { expiresIn: config.jwt.expiresIn });
 
+/** Session token for a user: id, role name and the role's permissions as a bitmask. */
+const issueToken = (user, permissions) => generateJWT({
+  id:   user.id,
+  role: user.role?.name || null,
+  p:    encodePermissions(permissions || []),
+});
+
 const login = async (email, password) => {
   if (!email || !password) throwError('Email and password are required', 400);
 
@@ -34,11 +41,7 @@ const login = async (email, password) => {
   });
 
   const permissions = user.role?.permissions || [];
-  const token = generateJWT({
-    id:   user.id,
-    role: user.role?.name || null,
-    p:    encodePermissions(permissions),
-  });
+  const token = issueToken(user, permissions);
 
   const { password: _, ...userObj } = user;
   userObj.role = user.role ? { id: user.role.id, name: user.role.name } : null;
@@ -168,6 +171,7 @@ const resetPassword = async (email, otp, newPassword) => {
 };
 
 module.exports = {
+  issueToken,
   login,
   logout,
   register,
