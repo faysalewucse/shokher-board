@@ -50,3 +50,8 @@ Thumbs.db
 
 # Misc
 *.local
+
+# SSH / TLS keys
+*.key
+*.key.pub
+*.pem
