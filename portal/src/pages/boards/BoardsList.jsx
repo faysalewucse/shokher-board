@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Button, Input, Skeleton, message } from 'antd';
 import MonoEmpty from '@/components/MonoEmpty';
-import { PlusOutlined, ProjectOutlined, SearchOutlined, FolderOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { PlusOutlined, ProjectOutlined, SearchOutlined, FolderOutlined, AppstoreOutlined, ImportOutlined } from '@ant-design/icons';
 import PageHeader from '@/components/PageHeader';
 import usePermission from '@/hooks/usePermission';
 import { getBoards, createBoard, errorMessage } from '@/services/boards';
 import BoardFormModal from './BoardFormModal';
 import BoardTile, { CreateBoardTile } from './BoardTile';
+import TrelloImportModal from './trelloImport/TrelloImportModal';
 
 function Group({ icon, title, subtitle, boards, onOpen, children }) {
   return (
@@ -32,6 +33,7 @@ export default function BoardsList() {
   const [boards, setBoards] = useState(null);
   const [query, setQuery] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -96,6 +98,9 @@ export default function BoardsList() {
               className="hidden sm:flex"
             />
             {canCreate && (
+              <Button icon={<ImportOutlined />} onClick={() => setImportOpen(true)}>Import from Trello</Button>
+            )}
+            {canCreate && (
               <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateOpen(true)}>New board</Button>
             )}
           </>
@@ -150,6 +155,7 @@ export default function BoardsList() {
       </div>
 
       <BoardFormModal open={createOpen} onCancel={() => setCreateOpen(false)} onSubmit={handleCreate} />
+      {canCreate && <TrelloImportModal open={importOpen} onClose={() => setImportOpen(false)} />}
     </div>
   );
 }

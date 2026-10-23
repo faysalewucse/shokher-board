@@ -3,11 +3,17 @@ import { Avatar, Button, Mentions, Popconfirm, Skeleton, Tooltip, message } from
 import { getComments, createComment, updateComment, deleteComment, errorMessage } from '@/services/boards';
 import { avatarSrc, initials, fromNow, mentionToken } from '../boardUtils';
 
-/** Render a comment body, highlighting @mentions. */
+// First line the Trello importer adds when the original author wasn't mapped.
+const IMPORTED_RE = /^(Originally by .+ on Trello · [^\n]+)\n\n/;
+
+/** Render a comment body, highlighting @mentions (imported attribution shown as a caption). */
 function Body({ text }) {
-  const parts = String(text || '').split(/(@[\w.-]+)/g);
+  const raw = String(text || '');
+  const imported = raw.match(IMPORTED_RE);
+  const parts = (imported ? raw.slice(imported[0].length) : raw).split(/(@[\w.-]+)/g);
   return (
     <div className="whitespace-pre-wrap break-words text-[13px] leading-relaxed text-fg">
+      {imported && <div className="mono mb-1 text-[10.5px] text-fg-3">{imported[1]}</div>}
       {parts.map((p, i) => (p.startsWith('@')
         ? <span key={i} className="mention">{p}</span>
         : <span key={i}>{p}</span>))}

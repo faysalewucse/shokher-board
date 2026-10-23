@@ -54,6 +54,7 @@ Message    = { id: cardId, text: card.title, description, listId, author: UserLi
 **Boards**
 - `GET /boards?projectId=&standalone=true`: boards the caller belongs to. With BOARD_MANAGE_ANY, all boards.
 - `POST /boards { name, description?, color?, projectId? }` (BOARD_CREATE): the creator becomes owner, and the Inbox list is created.
+- `POST /boards/import/trello` (BOARD_CREATE): creates a board from a normalized Trello export and returns `{ board, counts }`. See [trello-import.md](trello-import.md).
 - `GET /boards/:id`: returns `{ board, members: BoardMember[], labels: Label[], lists: List[], cards: CardSummary[] }`, active items only, sorted by position.
 - `PATCH /boards/:id` (owner) · `DELETE /boards/:id` (owner; archives the board)
 - `POST /boards/:id/members { userId, role }` · `PATCH /boards/:id/members/:userId { role }` · `DELETE /boards/:id/members/:userId` (owner only; the last owner can't be removed)
@@ -97,4 +98,4 @@ Message    = { id: cardId, text: card.title, description, listId, author: UserLi
 - Due-soon: an hourly cron job notifies assignees of cards due within 24 hours that aren't completed and haven't been notified yet (flag `dueNotifiedAt`).
 
 ## Activity types
-`card.created`, `card.moved` (`data: {fromListId, toListId}`), `card.updated` (`data: {fields}`), `card.completed`, `card.reopened`, `card.assigned` (`data: {userId}`), `card.unassigned`, `card.archived`, `comment.created`, `attachment.added`, `checklist.item_done`, `list.created`, `list.archived`, `board.created`, `member.added`, `member.removed`, `project.created`, `project.status_changed`, `client.created`.
+`card.created`, `card.moved` (`data: {fromListId, toListId}`), `card.updated` (`data: {fields}`), `card.completed`, `card.reopened`, `card.assigned` (`data: {userId}`), `card.unassigned`, `card.archived`, `comment.created`, `attachment.added`, `checklist.item_done`, `list.created`, `list.archived`, `board.created`, `board.imported` (`data: {source, name, counts}`), `member.added`, `member.removed`, `project.created`, `project.status_changed`, `client.created`.

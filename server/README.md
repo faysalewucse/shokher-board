@@ -26,6 +26,7 @@ Log in with `ADMIN_EMAIL` / `ADMIN_PASSWORD` via `POST /api/v1/auth/login`.
 | `npm run db:generate` | Regenerate the Prisma client |
 | `npm run seed:roles` / `seed:users` / `seed:all` | Seed roles and the admin user (idempotent — re-run to push new permissions to existing roles) |
 | `npm run test:parser` | Self-test for the board message parser (`scripts/testMessageParser.js`) |
+| `npm run test:trello` | Self-test for the Trello import mapping + portal normalizer (`scripts/testTrelloImport.js`, fixture `scripts/fixtures/trello-sample.json`) |
 
 For tracked schema changes, edit `prisma/schema/*.prisma` and run `npx prisma migrate dev --name <change>`. Deploy with `npx prisma migrate deploy`.
 
@@ -44,6 +45,7 @@ For tracked schema changes, edit `prisma/schema/*.prisma` and run `npx prisma mi
 | `/admin` | `POST /cleanup-files`, `GET /storage-stats` | — |
 | `/clients`, `/projects` | Clients and projects (archive on delete) | [docs/boards-contract.md](docs/boards-contract.md) |
 | `/boards`, `/lists`, `/cards`, `/labels`, `/checklists`, `/checklist-items`, `/comments`, `/attachments` | Trello-like boards: members, labels, lists, cards, checklists, comments, attachments, activity, message-to-card | [docs/boards-contract.md](docs/boards-contract.md), [docs/boards.md](docs/boards.md) |
+| `/boards/import/trello` | Import a Trello board export (parsed and normalized in the portal) into a new board | [docs/trello-import.md](docs/trello-import.md) |
 | `/integrations/slack` | Per-user Slack connections (OAuth): connect, list, test, disconnect; admin overview | [docs/slack.md](docs/slack.md) |
 
 Socket.IO connects on the same port; authenticate with `auth: { token }`. Each user joins the room `user:<id>` and receives `notification:new`, `notification:read` and `notification:unread-count` events. For boards, emit `board:join { boardId }` (ack `{ ok, error? }`) / `board:leave { boardId }` and listen for `board:event { boardId, type, payload, actorId }`.

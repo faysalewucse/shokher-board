@@ -1,5 +1,7 @@
 const boardService = require('../services/boardService');
 const cardService = require('../services/cardService');
+const trelloImportService = require('../services/trelloImportService');
+const { summarizeCounts } = require('../services/trelloMapping');
 const { boardCtx } = require('../services/boardAccess');
 const { successResponse } = require('../utils/responseHandler');
 
@@ -16,6 +18,13 @@ const createBoard = async (req, res, next) => {
   try {
     const data = await boardService.createBoard(req.body, { userId: req.user.id });
     return successResponse(res, { statusCode: 201, message: 'Board created successfully', data });
+  } catch (error) { next(error); }
+};
+
+const importTrello = async (req, res, next) => {
+  try {
+    const data = await trelloImportService.importTrelloBoard(req.body, { userId: req.user.id });
+    return successResponse(res, { statusCode: 201, message: `Imported ${summarizeCounts(data.counts)}`, data });
   } catch (error) { next(error); }
 };
 
@@ -114,7 +123,7 @@ const createMessage = async (req, res, next) => {
 };
 
 module.exports = {
-  listBoards, createBoard, getBoard, updateBoard, archiveBoard,
+  listBoards, createBoard, importTrello, getBoard, updateBoard, archiveBoard,
   addMember, updateMember, removeMember,
   createLabel, listActivity, createList, createCard, listMessages, createMessage,
 };

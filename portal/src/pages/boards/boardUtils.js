@@ -153,6 +153,7 @@ export function describeActivity(a, { lists = [], cardsById = {}, members = [] }
     case 'list.created': return `added list ${d.name ? `"${d.name}"` : ''}`.trim();
     case 'list.archived': return `archived list ${d.name ? `"${d.name}"` : ''}`.trim();
     case 'board.created': return 'created this board';
+    case 'board.imported': return `imported this board from ${d.source === 'trello' ? 'Trello' : d.source || 'another tool'}${d.counts ? ` (${d.counts.lists} lists, ${d.counts.cards} cards)` : ''}`;
     case 'member.added': return `added ${userName(d.userId)} to the board`;
     case 'member.removed': return `removed ${d.userName || userName(d.userId)} from the board`;
     case 'project.created': return 'created the project';

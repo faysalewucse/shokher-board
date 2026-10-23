@@ -23,6 +23,12 @@ export { getClients, getProjects } from './projects';
 export const getBoards = (params = {}) => api.get('/boards', { params }).then(unwrap);
 export const createBoard = (body) => api.post('/boards', body).then(unwrap);
 /** Resolves to `{ board, members, labels, lists, cards }`. */
+/**
+ * Import a normalized Trello export (see pages/boards/trelloImport/normalizeTrello.js).
+ * Body `{ name, projectId?, includeArchived, memberMap, data }`; resolves to `{ board, counts }`.
+ */
+export const importTrelloBoard = (body) =>
+  api.post('/boards/import/trello', body, { timeout: 120000 }).then(unwrap);
 export const getBoard = (id) => api.get(`/boards/${id}`).then(unwrap);
 export const updateBoard = (id, body) => api.patch(`/boards/${id}`, body).then(unwrap);
 export const deleteBoard = (id) => api.delete(`/boards/${id}`).then(unwrap);

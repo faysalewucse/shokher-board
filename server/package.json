@@ -11,7 +11,8 @@
     "seed:roles": "node src/seeds/roles.js",
     "seed:users": "node src/seeds/users.js",
     "seed:all": "npm run seed:roles && npm run seed:users",
-    "test:parser": "node scripts/testMessageParser.js"
+    "test:parser": "node scripts/testMessageParser.js",
+    "test:trello": "node scripts/testTrelloImport.js"
   },
   "keywords": [],
   "author": "",

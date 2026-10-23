@@ -15,6 +15,7 @@ const owner  = assertBoardRole('owner');
 // Boards
 router.get('/',       authenticate, c.listBoards);
 router.post('/',      authenticate, authorize('BOARD_CREATE'), validate(v.createBoard), c.createBoard);
+router.post('/import/trello', authenticate, authorize('BOARD_CREATE'), validate(v.importTrello), c.importTrello);
 router.get('/:id',    authenticate, viewer, c.getBoard);
 router.patch('/:id',  authenticate, owner,  validate(v.updateBoard), c.updateBoard);
 router.delete('/:id', authenticate, owner,  c.archiveBoard);

@@ -5,6 +5,11 @@ const activity = require('./activityService');
 const { deleteFileByUrl, getFileUrl, UPLOAD_FOLDERS } = require('../middleware/upload');
 const { USER_LITE_SELECT, toAttachment, getCardSummary } = require('./boardFormat');
 
+const isLocalUpload = (url) => {
+  if (!/^https?:\/\//i.test(url)) return String(url).startsWith('/uploads/');
+  try { return new URL(url).pathname.startsWith('/uploads/'); } catch { return false; }
+};
+
 /**
  * attachment.changed payload: the attachment (or { id, deleted: true }) plus
  * cardId and the refreshed CardSummary so clients can update counts.
@@ -48,7 +53,8 @@ const deleteAttachment = async (id, ctx) => {
   const attachment = await prisma.attachment.findUnique({ where: { id } });
   if (!attachment) throwError('Attachment not found', 404);
   await prisma.attachment.delete({ where: { id } });
-  await deleteFileByUrl(attachment.url);
+  // Imported (e.g. Trello) attachments are external links — only local uploads have a file to remove.
+  if (isLocalUpload(attachment.url)) await deleteFileByUrl(attachment.url);
   await emitChanged(attachment.cardId, { id, deleted: true }, ctx);
 };
 

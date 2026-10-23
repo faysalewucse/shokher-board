@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button, Popconfirm, Progress, Tooltip, Upload, message } from 'antd';
-import { DeleteOutlined, DownloadOutlined, FileOutlined, PaperClipOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownloadOutlined, FileOutlined, LinkOutlined, PaperClipOutlined } from '@ant-design/icons';
 import { getFileUrl } from '@/services/api';
 import { uploadAttachment, deleteAttachment, errorMessage } from '@/services/boards';
 import { fromNow } from '../boardUtils';
@@ -62,7 +62,10 @@ export default function CardAttachments({ cardId, attachments = [], commit, canE
       {attachments.length === 0 && <div className="text-[12px] text-fg-3">No attachments.</div>}
       {attachments.map((a) => {
         const url = getFileUrl(a.url);
-        const isImage = a.mimeType?.startsWith('image/');
+        // Imported (e.g. Trello) attachments are external links: no inline preview,
+        // since the source may need its own login.
+        const external = /^https?:\/\//i.test(a.url || '');
+        const isImage = !external && a.mimeType?.startsWith('image/');
         return (
           <div key={a.id} className="flex items-center gap-3 rounded-md border border-line p-2 transition-colors hover:border-fg">
             <a href={url} target="_blank" rel="noreferrer" className="shrink-0">
@@ -70,14 +73,14 @@ export default function CardAttachments({ cardId, attachments = [], commit, canE
                 <img src={url} alt={a.fileName} className="h-12 w-16 rounded-sm border border-line object-cover" />
               ) : (
                 <div className="flex h-12 w-16 items-center justify-center rounded-sm border border-line bg-surface-2 text-lg text-fg-2">
-                  <FileOutlined />
+                  {external ? <LinkOutlined /> : <FileOutlined />}
                 </div>
               )}
             </a>
             <div className="min-w-0 flex-1">
               <a href={url} target="_blank" rel="noreferrer" className="block truncate text-[13px] font-semibold text-fg! hover:underline">{a.fileName}</a>
               <div className="mono text-[10.5px] text-fg-3">
-                {formatSize(a.size)}
+                {external && !a.size ? 'Link' : formatSize(a.size)}
                 {a.uploader?.name && ` · ${a.uploader.name}`}
                 {a.createdAt && ` · ${fromNow(a.createdAt)}`}
               </div>
